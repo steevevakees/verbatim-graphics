@@ -12,23 +12,34 @@ type FlowStep = "reasoning" | "initial" | "confirmed" | "reasoning2" | "placed";
 const OrderFlow = () => {
   const [step, setStep] = useState<FlowStep>("reasoning");
   const [orderTime, setOrderTime] = useState("");
+  const [isNearBottom, setIsNearBottom] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when step changes or content updates
+  // Check if user is near bottom of scroll
+  const checkIfNearBottom = () => {
+    if (scrollRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
+      const threshold = 100; // pixels from bottom
+      const isNear = scrollHeight - scrollTop - clientHeight < threshold;
+      setIsNearBottom(isNear);
+    }
+  };
+
+  // Auto-scroll to bottom when step changes, but only if user is near bottom
   useEffect(() => {
-    const scrollToBottom = () => {
-      if (scrollRef.current) {
-        scrollRef.current.scrollTo({
+    if (isNearBottom && scrollRef.current) {
+      const scrollToBottom = () => {
+        scrollRef.current?.scrollTo({
           top: scrollRef.current.scrollHeight,
           behavior: "smooth"
         });
-      }
-    };
+      };
 
-    // Delay scroll slightly to allow content to render
-    const timer = setTimeout(scrollToBottom, 100);
-    return () => clearTimeout(timer);
-  }, [step]);
+      // Delay scroll slightly to allow content to render
+      const timer = setTimeout(scrollToBottom, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [step, isNearBottom]);
 
   // Simulate reasoning delay
   useEffect(() => {
@@ -57,7 +68,11 @@ const OrderFlow = () => {
   };
 
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6">
+    <div 
+      ref={scrollRef} 
+      className="h-full overflow-y-auto px-4 py-6 pb-8"
+      onScroll={checkIfNearBottom}
+    >
       {/* User Message */}
       <MessageBubble
         role="user"
