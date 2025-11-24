@@ -23,9 +23,12 @@ const ChatInterface = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background safe-top safe-bottom">
-      {/* Top Navigation */}
-      <header className="flex items-center justify-between px-4 py-3 border-b border-border safe-top">
+    <div className="flex items-center justify-center min-h-screen bg-muted">
+      {/* iPhone 16 Pro Max container with aspect ratio 2868:1320 */}
+      <div className="relative w-full max-w-[430px] mx-auto bg-background" style={{ aspectRatio: '2868/1320' }}>
+        <div className="flex flex-col h-full bg-background safe-top safe-bottom">
+          {/* Top Navigation */}
+          <header className="flex items-center justify-between px-4 py-3 border-b border-border safe-top">
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" className="h-8 w-8">
             <Menu className="h-5 w-5" />
@@ -93,6 +96,8 @@ const ChatInterface = () => {
               <ArrowUp className="h-5 w-5" />
             </Button>
           </div>
+        </div>
+      </div>
         </div>
       </div>
     </div>
