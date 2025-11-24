@@ -14,11 +14,20 @@ const OrderFlow = () => {
   const [orderTime, setOrderTime] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when step changes
+  // Auto-scroll to bottom when step changes or content updates
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
+    const scrollToBottom = () => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({
+          top: scrollRef.current.scrollHeight,
+          behavior: "smooth"
+        });
+      }
+    };
+
+    // Delay scroll slightly to allow content to render
+    const timer = setTimeout(scrollToBottom, 100);
+    return () => clearTimeout(timer);
   }, [step]);
 
   // Simulate reasoning delay

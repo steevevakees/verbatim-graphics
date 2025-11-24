@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import TypewriterText from "./TypewriterText";
 
 interface MessageBubbleProps {
   role: "user" | "assistant";
@@ -21,7 +22,7 @@ const MessageBubble = ({ role, content }: MessageBubbleProps) => {
             : "bg-muted text-foreground"
         )}
       >
-        {content}
+        {role === "assistant" ? <TypewriterText text={content} /> : content}
       </div>
     </div>
   );
