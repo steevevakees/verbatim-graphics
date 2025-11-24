@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'],
+        sans: ['"Söhne"', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -41,6 +41,10 @@ export default {
         accent: {
           DEFAULT: "hsl(var(--accent))",
           foreground: "hsl(var(--accent-foreground))",
+        },
+        "user-message": {
+          DEFAULT: "hsl(var(--user-message))",
+          foreground: "hsl(var(--user-message-foreground))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",

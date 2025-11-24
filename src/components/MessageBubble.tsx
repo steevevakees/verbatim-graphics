@@ -18,7 +18,7 @@ const MessageBubble = ({ role, content }: MessageBubbleProps) => {
         className={cn(
           "max-w-[85%] rounded-[20px] px-4 py-3 text-[15px] leading-[22px]",
           role === "user"
-            ? "bg-foreground text-background"
+            ? "bg-user-message text-user-message-foreground"
             : "bg-muted text-foreground"
         )}
       >
