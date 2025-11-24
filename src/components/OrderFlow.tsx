@@ -65,7 +65,30 @@ const OrderFlow = () => {
             role="assistant"
             content="Got it. One Baron for later today at 1 pm with no horseradish mayo and a side of pickles. Check the order below and confirm if everything looks right."
           />
-          <BaronItemCard onConfirm={handleConfirm} />
+          {step === "initial" ? (
+            <BaronItemCard onConfirm={handleConfirm} />
+          ) : (
+            <div className="w-full max-w-sm mx-auto mt-2 rounded-2xl border border-border bg-card shadow-lg overflow-hidden opacity-60">
+              <div className="w-full aspect-[4/3] overflow-hidden">
+                <img
+                  src={require("@/assets/baron-sandwich.png")}
+                  alt="The Baron roast beef sandwich"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <h2 className="text-lg font-semibold">The Baron (Roast Beef)</h2>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      No horseradish mayo • Side of pickles
+                    </p>
+                  </div>
+                  <span className="text-sm font-medium">$20.40</span>
+                </div>
+              </div>
+            </div>
+          )}
         </>
       )}
 
@@ -81,7 +104,29 @@ const OrderFlow = () => {
             role="assistant"
             content="Great, I have your Baron set the way you like it. Based on your location, you are closest to Counter Service 14th St at 54 W 14th St. Choose a pickup time for today."
           />
-          <LocationTimeCard onPlaceOrder={handlePlaceOrder} />
+          {step === "confirmed" ? (
+            <LocationTimeCard onPlaceOrder={handlePlaceOrder} />
+          ) : (
+            <div className="w-full max-w-sm mx-auto mt-2 opacity-60">
+              <article className="rounded-2xl border border-border bg-card shadow-lg overflow-hidden">
+                <div className="w-full aspect-[4/3] overflow-hidden">
+                  <img
+                    src={require("@/assets/counter-service-storefront.png")}
+                    alt="Counter Service 14th St storefront"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-4 flex flex-col gap-2">
+                  <div className="flex items-center justify-between gap-2">
+                    <h2 className="text-lg font-semibold">Counter Service 14th St</h2>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    54 W 14th St · Near Union Square
+                  </p>
+                </div>
+              </article>
+            </div>
+          )}
         </>
       )}
 
