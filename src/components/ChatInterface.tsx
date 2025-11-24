@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Menu, Plus, Mic, ArrowUp, User, Settings } from "lucide-react";
 import { useState } from "react";
+import OrderFlow from "./OrderFlow";
 
 const ChatInterface = () => {
   const [message, setMessage] = useState("");
@@ -45,14 +46,8 @@ const ChatInterface = () => {
       </header>
 
       {/* Main Chat Area */}
-      <main className="flex-1 flex items-center justify-center overflow-y-auto">
-        <div className="max-w-3xl w-full px-4">
-          <div className="text-center space-y-8">
-            <h1 className="text-3xl font-normal text-foreground">
-              Good to see you, Steeve.
-            </h1>
-          </div>
-        </div>
+      <main className="flex-1 overflow-hidden">
+        <OrderFlow />
       </main>
 
       {/* Bottom Input Area */}
