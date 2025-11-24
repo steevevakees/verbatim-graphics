@@ -5,11 +5,12 @@ import { useState } from "react";
 import OrderFlow from "./OrderFlow";
 
 const ChatInterface = () => {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState("Order The Baron for pickup later today at 1 PM. No horseradish mayo and add a side of pickles?");
+  const [hasStarted, setHasStarted] = useState(false);
 
   const handleSend = () => {
-    if (message.trim()) {
-      console.log("Sending:", message);
+    if (message.trim() && !hasStarted) {
+      setHasStarted(true);
       setMessage("");
     }
   };
@@ -47,7 +48,15 @@ const ChatInterface = () => {
 
       {/* Main Chat Area */}
       <main className="flex-1 overflow-hidden">
-        <OrderFlow />
+        {hasStarted ? (
+          <OrderFlow />
+        ) : (
+          <div className="h-full flex items-center justify-center px-4">
+            <h1 className="text-3xl font-normal text-foreground">
+              Good to see you, Steeve.
+            </h1>
+          </div>
+        )}
       </main>
 
       {/* Bottom Input Area */}
