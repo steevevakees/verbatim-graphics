@@ -21,9 +21,9 @@ const ChatInterface = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex flex-col h-screen bg-background safe-top safe-bottom">
       {/* Top Navigation */}
-      <header className="flex items-center justify-between px-4 py-3 border-b border-border">
+      <header className="flex items-center justify-between px-4 py-3 border-b border-border safe-top">
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" className="h-8 w-8">
             <Menu className="h-5 w-5" />
@@ -56,8 +56,8 @@ const ChatInterface = () => {
       </main>
 
       {/* Bottom Input Area */}
-      <div className="border-t border-border bg-background">
-        <div className="max-w-3xl mx-auto px-4 py-4">
+      <div className="border-t border-border bg-background safe-bottom">
+        <div className="max-w-3xl mx-auto px-4 py-4 pb-6">
           <div className="relative flex items-center gap-2 bg-background border border-border rounded-[26px] px-4 py-3 shadow-sm hover:shadow-md transition-shadow">
             <Button
               variant="ghost"
