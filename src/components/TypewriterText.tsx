@@ -26,7 +26,18 @@ const TypewriterText = ({ text, speed = 30 }: TypewriterTextProps) => {
     setCurrentIndex(0);
   }, [text]);
 
-  return <>{displayedText}</>;
+  // Parse markdown-like bold syntax
+  const parseText = (text: string) => {
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={index}>{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+  };
+
+  return <>{parseText(displayedText)}</>;
 };
 
 export default TypewriterText;

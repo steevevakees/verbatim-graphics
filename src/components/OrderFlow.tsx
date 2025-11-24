@@ -6,8 +6,9 @@ import LocationTimeCard from "./LocationTimeCard";
 import ConfirmationCard from "./ConfirmationCard";
 import baronImage from "@/assets/baron-sandwich.png";
 import storefrontImage from "@/assets/counter-service-storefront.png";
+import counterServiceLogo from "@/assets/counter-service-logo.png";
 
-type FlowStep = "reasoning" | "initial" | "confirmed" | "reasoning2" | "placed";
+type FlowStep = "reasoning" | "reasoning1b" | "reasoning1c" | "reasoning1d" | "initial" | "confirmed" | "reasoning2" | "placed";
 
 const OrderFlow = () => {
   const [step, setStep] = useState<FlowStep>("reasoning");
@@ -41,9 +42,24 @@ const OrderFlow = () => {
     }
   }, [step, isNearBottom]);
 
-  // Simulate reasoning delay
+  // Simulate multi-step reasoning delays
   useEffect(() => {
     if (step === "reasoning") {
+      const timer = setTimeout(() => {
+        setStep("reasoning1b");
+      }, 1500);
+      return () => clearTimeout(timer);
+    } else if (step === "reasoning1b") {
+      const timer = setTimeout(() => {
+        setStep("reasoning1c");
+      }, 1500);
+      return () => clearTimeout(timer);
+    } else if (step === "reasoning1c") {
+      const timer = setTimeout(() => {
+        setStep("reasoning1d");
+      }, 1500);
+      return () => clearTimeout(timer);
+    } else if (step === "reasoning1d") {
       const timer = setTimeout(() => {
         setStep("initial");
       }, 1500);
@@ -79,9 +95,30 @@ const OrderFlow = () => {
         content="Order The Baron for pickup later today at 1 PM. No horseradish mayo and add a side of pickles?"
       />
 
-      {/* Reasoning State */}
+      {/* Multi-step Reasoning State */}
       {step === "reasoning" && (
-        <ReasoningBubble text="Using Counter Service" />
+        <ReasoningBubble text="Using Counter Service" logo={counterServiceLogo} />
+      )}
+      {step === "reasoning1b" && (
+        <>
+          <ReasoningBubble text="Using Counter Service" logo={counterServiceLogo} />
+          <ReasoningBubble text="Pulling up the menu" />
+        </>
+      )}
+      {step === "reasoning1c" && (
+        <>
+          <ReasoningBubble text="Using Counter Service" logo={counterServiceLogo} />
+          <ReasoningBubble text="Pulling up the menu" />
+          <ReasoningBubble text="Making adjustments" />
+        </>
+      )}
+      {(step === "reasoning1d" || step === "initial" || step === "reasoning2" || step === "confirmed" || step === "placed") && (
+        <>
+          <ReasoningBubble text="Using Counter Service" logo={counterServiceLogo} />
+          <ReasoningBubble text="Pulling up the menu" />
+          <ReasoningBubble text="Making adjustments" />
+          <ReasoningBubble text="Adding pickles to the side" />
+        </>
       )}
 
       {/* Initial Assistant Response + Item Card */}
@@ -89,7 +126,7 @@ const OrderFlow = () => {
         <>
           <MessageBubble
             role="assistant"
-            content="Got it. One Baron for later today at 1 pm with no horseradish mayo and a side of pickles. Check the order below and confirm if everything looks right."
+            content="Got it. One **Baron** for later today at 1 pm with no horseradish mayo and a side of pickles. Check the order below and confirm if everything looks right."
           />
           {step === "initial" ? (
             <BaronItemCard onConfirm={handleConfirm} />
@@ -128,7 +165,7 @@ const OrderFlow = () => {
         <>
           <MessageBubble
             role="assistant"
-            content="Great, I have your Baron set the way you like it. Based on your location, you are closest to Counter Service 14th St at 54 W 14th St. Choose a pickup time for today."
+            content="Great, I have your **Baron** set the way you like it. Based on your location, you are closest to **Counter Service 14th St** at **54 W 14th St**. Choose a pickup time for today."
           />
           {step === "confirmed" ? (
             <LocationTimeCard onPlaceOrder={handlePlaceOrder} />
@@ -162,7 +199,7 @@ const OrderFlow = () => {
           <ConfirmationCard time={orderTime} onDone={handleDone} />
           <MessageBubble
             role="assistant"
-            content="Confirmed. Your Baron will be ready for pickup at 1 pm at Counter Service 14th St, 54 W 14th St. Total is about twenty two dollars and twenty one cents with tax."
+            content="Confirmed. Your **Baron** will be ready for pickup at 1 pm at **Counter Service 14th St**, **54 W 14th St**. Total is $22.21 with tax."
           />
         </>
       )}
