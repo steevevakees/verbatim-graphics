@@ -7,39 +7,70 @@ import ConfirmationCard from "./ConfirmationCard";
 import baronImage from "@/assets/baron-sandwich.png";
 import storefrontImage from "@/assets/counter-service-storefront.png";
 
-type FlowStep = "reasoning" | "initial" | "confirmed" | "reasoning2" | "placed";
+type FlowStep = 
+  | "reasoning-menu" 
+  | "reasoning-order" 
+  | "initial" 
+  | "typewriter1"
+  | "confirmed" 
+  | "reasoning-location" 
+  | "typewriter2"
+  | "placed"
+  | "typewriter3";
 
 const OrderFlow = () => {
-  const [step, setStep] = useState<FlowStep>("reasoning");
+  const [step, setStep] = useState<FlowStep>("reasoning-menu");
   const [orderTime, setOrderTime] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom when step changes
+  // Smooth auto-scroll to bottom when step changes
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      setTimeout(() => {
+        scrollRef.current?.scrollTo({
+          top: scrollRef.current.scrollHeight,
+          behavior: "smooth"
+        });
+      }, 100);
     }
   }, [step]);
 
-  // Simulate reasoning delay
+  // Multi-stage reasoning simulation
   useEffect(() => {
-    if (step === "reasoning") {
+    if (step === "reasoning-menu") {
       const timer = setTimeout(() => {
-        setStep("initial");
+        setStep("reasoning-order");
+      }, 1200);
+      return () => clearTimeout(timer);
+    } else if (step === "reasoning-order") {
+      const timer = setTimeout(() => {
+        setStep("typewriter1");
       }, 1500);
       return () => clearTimeout(timer);
     }
   }, [step]);
 
+  const handleTypewriter1Complete = () => {
+    setStep("initial");
+  };
+
   const handleConfirm = () => {
-    setStep("reasoning2");
+    setStep("reasoning-location");
     setTimeout(() => {
-      setStep("confirmed");
-    }, 1200);
+      setStep("typewriter2");
+    }, 1400);
+  };
+
+  const handleTypewriter2Complete = () => {
+    setStep("confirmed");
   };
 
   const handlePlaceOrder = (time: string) => {
     setOrderTime(time);
+    setStep("typewriter3");
+  };
+
+  const handleTypewriter3Complete = () => {
     setStep("placed");
   };
 
@@ -48,28 +79,53 @@ const OrderFlow = () => {
   };
 
   return (
-    <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6">
+    <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6 scroll-smooth">
       {/* User Message */}
       <MessageBubble
         role="user"
         content="Order The Baron for pickup later today at 1 PM. No horseradish mayo and add a side of pickles?"
       />
 
-      {/* Reasoning State */}
-      {step === "reasoning" && (
-        <ReasoningBubble text="Using Counter Service" />
+      {/* Multi-stage Reasoning */}
+      {step === "reasoning-menu" && (
+        <ReasoningBubble 
+          text="Using Counter Service" 
+          detail="Looking up menu items"
+        />
       )}
 
-      {/* Initial Assistant Response + Item Card */}
-      {(step === "initial" || step === "reasoning2" || step === "confirmed" || step === "placed") && (
+      {(step === "reasoning-order" || step === "typewriter1" || step === "initial" || 
+        step === "reasoning-location" || step === "typewriter2" || step === "confirmed" || 
+        step === "typewriter3" || step === "placed") && (
+        <ReasoningBubble 
+          text="Using Counter Service" 
+          detail="Looking up menu items"
+        />
+      )}
+
+      {(step === "reasoning-order" || step === "typewriter1" || step === "initial" || 
+        step === "reasoning-location" || step === "typewriter2" || step === "confirmed" || 
+        step === "typewriter3" || step === "placed") && (
+        <ReasoningBubble 
+          text="Using Counter Service" 
+          detail="Building your customized Baron sandwich"
+        />
+      )}
+
+      {/* First Assistant Response + Item Card */}
+      {(step === "typewriter1" || step === "initial" || step === "reasoning-location" || 
+        step === "typewriter2" || step === "confirmed" || step === "typewriter3" || step === "placed") && (
         <>
           <MessageBubble
             role="assistant"
             content="Got it. One Baron for later today at 1 pm with no horseradish mayo and a side of pickles. Check the order below and confirm if everything looks right."
+            useTypewriter={step === "typewriter1"}
+            onTypewriterComplete={handleTypewriter1Complete}
           />
-          {step === "initial" ? (
-            <BaronItemCard onConfirm={handleConfirm} />
-          ) : (
+          {step === "initial" && <BaronItemCard onConfirm={handleConfirm} />}
+          
+          {(step === "reasoning-location" || step === "typewriter2" || step === "confirmed" || 
+            step === "typewriter3" || step === "placed") && (
             <div className="w-full max-w-sm mx-auto mt-2 rounded-2xl border border-border bg-card shadow-lg overflow-hidden opacity-60">
               <div className="w-full aspect-[4/3] overflow-hidden">
                 <img
@@ -94,21 +150,27 @@ const OrderFlow = () => {
         </>
       )}
 
-      {/* Second Reasoning State */}
-      {step === "reasoning2" && (
-        <ReasoningBubble text="Finding nearby locations" />
+      {/* Location Reasoning State */}
+      {(step === "reasoning-location" || step === "typewriter2" || step === "confirmed" || 
+        step === "typewriter3" || step === "placed") && (
+        <ReasoningBubble 
+          text="Using Counter Service" 
+          detail="Finding nearby Counter Service locations"
+        />
       )}
 
       {/* After Confirmation - Location Card */}
-      {(step === "confirmed" || step === "placed") && (
+      {(step === "typewriter2" || step === "confirmed" || step === "typewriter3" || step === "placed") && (
         <>
           <MessageBubble
             role="assistant"
             content="Great, I have your Baron set the way you like it. Based on your location, you are closest to Counter Service 14th St at 54 W 14th St. Choose a pickup time for today."
+            useTypewriter={step === "typewriter2"}
+            onTypewriterComplete={handleTypewriter2Complete}
           />
-          {step === "confirmed" ? (
-            <LocationTimeCard onPlaceOrder={handlePlaceOrder} />
-          ) : (
+          {step === "confirmed" && <LocationTimeCard onPlaceOrder={handlePlaceOrder} />}
+          
+          {(step === "typewriter3" || step === "placed") && (
             <div className="w-full max-w-sm mx-auto mt-2 opacity-60">
               <article className="rounded-2xl border border-border bg-card shadow-lg overflow-hidden">
                 <div className="w-full aspect-[4/3] overflow-hidden">
@@ -133,13 +195,20 @@ const OrderFlow = () => {
       )}
 
       {/* After Placing Order - Confirmation */}
-      {step === "placed" && (
+      {(step === "typewriter3" || step === "placed") && (
         <>
-          <ConfirmationCard time={orderTime} onDone={handleDone} />
           <MessageBubble
             role="assistant"
             content="Confirmed. Your Baron will be ready for pickup at 1 pm at Counter Service 14th St, 54 W 14th St. Total is about twenty two dollars and twenty one cents with tax."
+            useTypewriter={step === "typewriter3"}
+            onTypewriterComplete={handleTypewriter3Complete}
           />
+        </>
+      )}
+      
+      {step === "placed" && (
+        <>
+          <ConfirmationCard time={orderTime} onDone={handleDone} />
         </>
       )}
     </div>

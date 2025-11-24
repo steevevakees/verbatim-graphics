@@ -1,11 +1,14 @@
 import { cn } from "@/lib/utils";
+import TypewriterText from "./TypewriterText";
 
 interface MessageBubbleProps {
   role: "user" | "assistant";
   content: string;
+  useTypewriter?: boolean;
+  onTypewriterComplete?: () => void;
 }
 
-const MessageBubble = ({ role, content }: MessageBubbleProps) => {
+const MessageBubble = ({ role, content, useTypewriter = false, onTypewriterComplete }: MessageBubbleProps) => {
   return (
     <div
       className={cn(
@@ -21,7 +24,11 @@ const MessageBubble = ({ role, content }: MessageBubbleProps) => {
             : "bg-muted text-foreground"
         )}
       >
-        {content}
+        {useTypewriter && role === "assistant" ? (
+          <TypewriterText text={content} onComplete={onTypewriterComplete} />
+        ) : (
+          content
+        )}
       </div>
     </div>
   );
