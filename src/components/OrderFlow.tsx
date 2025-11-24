@@ -4,6 +4,8 @@ import ReasoningBubble from "./ReasoningBubble";
 import BaronItemCard from "./BaronItemCard";
 import LocationTimeCard from "./LocationTimeCard";
 import ConfirmationCard from "./ConfirmationCard";
+import baronImage from "@/assets/baron-sandwich.png";
+import storefrontImage from "@/assets/counter-service-storefront.png";
 
 type FlowStep = "reasoning" | "initial" | "confirmed" | "reasoning2" | "placed";
 
@@ -71,7 +73,7 @@ const OrderFlow = () => {
             <div className="w-full max-w-sm mx-auto mt-2 rounded-2xl border border-border bg-card shadow-lg overflow-hidden opacity-60">
               <div className="w-full aspect-[4/3] overflow-hidden">
                 <img
-                  src={require("@/assets/baron-sandwich.png")}
+                  src={baronImage}
                   alt="The Baron roast beef sandwich"
                   className="w-full h-full object-cover"
                 />
@@ -111,7 +113,7 @@ const OrderFlow = () => {
               <article className="rounded-2xl border border-border bg-card shadow-lg overflow-hidden">
                 <div className="w-full aspect-[4/3] overflow-hidden">
                   <img
-                    src={require("@/assets/counter-service-storefront.png")}
+                    src={storefrontImage}
                     alt="Counter Service 14th St storefront"
                     className="w-full h-full object-cover"
                   />
