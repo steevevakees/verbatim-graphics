@@ -8,12 +8,14 @@ import baronImage from "@/assets/baron-sandwich.png";
 import storefrontImage from "@/assets/counter-service-storefront.png";
 import counterServiceLogo from "@/assets/counter-service-logo.png";
 
-type FlowStep = "reasoning" | "reasoning1b" | "reasoning1c" | "reasoning1d" | "initial" | "confirmed" | "reasoning2" | "placed";
+type FlowStep = "reasoning" | "reasoning1b" | "reasoning1c" | "reasoning1d" | "fadeOut" | "initial" | "confirmed" | "reasoning2" | "fadeOut2" | "placed";
 
 const OrderFlow = () => {
   const [step, setStep] = useState<FlowStep>("reasoning");
   const [orderTime, setOrderTime] = useState("");
   const [isNearBottom, setIsNearBottom] = useState(true);
+  const [showReasoningBubbles, setShowReasoningBubbles] = useState(true);
+  const [showSecondReasoning, setShowSecondReasoning] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Check if user is near bottom of scroll
@@ -47,31 +49,42 @@ const OrderFlow = () => {
     if (step === "reasoning") {
       const timer = setTimeout(() => {
         setStep("reasoning1b");
-      }, 1500);
+      }, 1200);
       return () => clearTimeout(timer);
     } else if (step === "reasoning1b") {
       const timer = setTimeout(() => {
         setStep("reasoning1c");
-      }, 1500);
+      }, 1200);
       return () => clearTimeout(timer);
     } else if (step === "reasoning1c") {
       const timer = setTimeout(() => {
         setStep("reasoning1d");
-      }, 1500);
+      }, 1200);
       return () => clearTimeout(timer);
     } else if (step === "reasoning1d") {
       const timer = setTimeout(() => {
+        setStep("fadeOut");
+      }, 1200);
+      return () => clearTimeout(timer);
+    } else if (step === "fadeOut") {
+      const timer = setTimeout(() => {
+        setShowReasoningBubbles(false);
         setStep("initial");
-      }, 1500);
+      }, 500);
       return () => clearTimeout(timer);
     }
   }, [step]);
 
   const handleConfirm = () => {
+    setShowSecondReasoning(true);
     setStep("reasoning2");
     setTimeout(() => {
-      setStep("confirmed");
+      setStep("fadeOut2");
     }, 1200);
+    setTimeout(() => {
+      setShowSecondReasoning(false);
+      setStep("confirmed");
+    }, 1700);
   };
 
   const handlePlaceOrder = (time: string) => {
@@ -96,33 +109,33 @@ const OrderFlow = () => {
       />
 
       {/* Multi-step Reasoning State */}
-      {step === "reasoning" && (
+      {showReasoningBubbles && step === "reasoning" && (
         <ReasoningBubble text="Using Counter Service" logo={counterServiceLogo} />
       )}
-      {step === "reasoning1b" && (
+      {showReasoningBubbles && step === "reasoning1b" && (
         <>
-          <ReasoningBubble text="Using Counter Service" logo={counterServiceLogo} />
+          <ReasoningBubble text="Using Counter Service" logo={counterServiceLogo} completed />
           <ReasoningBubble text="Pulling up the menu" />
         </>
       )}
-      {step === "reasoning1c" && (
+      {showReasoningBubbles && step === "reasoning1c" && (
         <>
-          <ReasoningBubble text="Using Counter Service" logo={counterServiceLogo} />
-          <ReasoningBubble text="Pulling up the menu" />
+          <ReasoningBubble text="Using Counter Service" logo={counterServiceLogo} completed />
+          <ReasoningBubble text="Pulling up the menu" completed />
           <ReasoningBubble text="Making adjustments" />
         </>
       )}
-      {(step === "reasoning1d" || step === "initial" || step === "reasoning2" || step === "confirmed" || step === "placed") && (
+      {showReasoningBubbles && (step === "reasoning1d" || step === "fadeOut") && (
         <>
-          <ReasoningBubble text="Using Counter Service" logo={counterServiceLogo} />
-          <ReasoningBubble text="Pulling up the menu" />
-          <ReasoningBubble text="Making adjustments" />
-          <ReasoningBubble text="Adding pickles to the side" />
+          <ReasoningBubble text="Using Counter Service" logo={counterServiceLogo} completed fadeOut={step === "fadeOut"} />
+          <ReasoningBubble text="Pulling up the menu" completed fadeOut={step === "fadeOut"} />
+          <ReasoningBubble text="Making adjustments" completed fadeOut={step === "fadeOut"} />
+          <ReasoningBubble text="Adding pickles to the side" completed={step === "reasoning1d"} fadeOut={step === "fadeOut"} />
         </>
       )}
 
       {/* Initial Assistant Response + Item Card */}
-      {(step === "initial" || step === "reasoning2" || step === "confirmed" || step === "placed") && (
+      {(step === "initial" || step === "reasoning2" || step === "fadeOut2" || step === "confirmed" || step === "placed") && (
         <>
           <MessageBubble
             role="assistant"
@@ -156,8 +169,8 @@ const OrderFlow = () => {
       )}
 
       {/* Second Reasoning State */}
-      {step === "reasoning2" && (
-        <ReasoningBubble text="Finding nearby locations" />
+      {showSecondReasoning && (step === "reasoning2" || step === "fadeOut2") && (
+        <ReasoningBubble text="Finding nearby locations" completed={step === "fadeOut2"} fadeOut={step === "fadeOut2"} />
       )}
 
       {/* After Confirmation - Location Card */}
