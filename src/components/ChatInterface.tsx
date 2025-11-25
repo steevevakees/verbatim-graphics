@@ -52,7 +52,7 @@ const ChatInterface = () => {
           <OrderFlow />
         ) : (
           <div className="h-full flex items-center justify-center px-4">
-            <h1 className="text-3xl font-normal text-foreground">
+            <h1 className="text-3xl font-normal text-foreground text-center">
               Good to see you, Steeve.
             </h1>
           </div>
